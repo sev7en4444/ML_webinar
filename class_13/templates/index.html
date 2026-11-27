@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fare Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-gradient: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --focus-ring: rgba(79, 70, 229, 0.2);
+      --result-bg: #ecfdf5;
+      --result-border: #a7f3d0;
+      --result-text: #065f46;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 460px;
+      padding: 2.25rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background-color: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      background-color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--focus-ring);
+    }
+
+    select {
+      text-transform: capitalize;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 0.5rem;
+      padding: 0.85rem;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: #ffffff;
+      background-color: var(--primary);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.25);
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .result-box {
+      margin-top: 1.5rem;
+      padding: 1.1rem;
+      background-color: var(--result-bg);
+      border: 1.5px solid var(--result-border);
+      border-radius: 12px;
+      text-align: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .result-box span {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #059669;
+      margin-bottom: 0.2rem;
+    }
+
+    .result-box h3 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--result-text);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 420px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h2>Ride Fare Predictor</h2>
+      <p>Enter your trip details to estimate the fare</p>
+    </div>
+
+    <form action="/predict" method="post">
+      <div class="form-group">
+        <label for="distance_m">Distance (meters)</label>
+        <input type="number" id="distance_m" name="distance_m" min="100" placeholder="e.g. 2500" required>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="vehicle">Vehicle</label>
+          <select id="vehicle" name="vehicle">
+            <option value="auto">Auto</option>
+            <option value="erickshaw">E-Rickshaw</option>
+            <option value="cycle">Cycle</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="mode">Mode</label>
+          <select id="mode" name="mode">
+            <option value="shared">Shared</option>
+            <option value="reserved">Reserved</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="time_of_day">Time of Day</label>
+          <select id="time_of_day" name="time_of_day">
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+            <option value="night">Night</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="is_tourist">Tourist</label>
+          <select id="is_tourist" name="is_tourist">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="people">People</label>
+          <input type="number" id="people" name="people" min="1" max="4" value="1">
+        </div>
+
+        <div class="form-group">
+          <label for="bags">Bags</label>
+          <input type="number" id="bags" name="bags" min="0" max="3" value="0">
+        </div>
+      </div>
+
+      <button type="submit">Predict Fare</button>
+    </form>
+
+    {% if fare is defined %}
+      <div class="result-box">
+        <span>Estimated Fare</span>
+        <h3>₹{{ fare }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
